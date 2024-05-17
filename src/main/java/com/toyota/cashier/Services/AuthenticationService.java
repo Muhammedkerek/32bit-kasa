@@ -54,7 +54,6 @@ public class AuthenticationService {
     private void SaveUserToken(String jwt, Admin admin) {
         Token token = new Token();
         token.setToken(jwt);
-        token.setLoggedOut(false);
         token.setAdmin(admin);
         tokenRepository.save(token);
     }
@@ -68,22 +67,14 @@ public class AuthenticationService {
         );
         Admin admin = adminRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.generateToken(admin);
-        revokeAllTokenByUser(admin);
+
 
         SaveUserToken(token , admin);
 
         return new AuthenticationResponse(token, "User login was successful");
     }
 
-    private void revokeAllTokenByUser(Admin admin) {
-        List<Token> validTokenListByUser = tokenRepository.findAllUsersById(admin.getId());
-        if(!validTokenListByUser.isEmpty()){
-            validTokenListByUser.forEach(t->{
-                t.setLoggedOut(true);
-            });
-        }
-        tokenRepository.saveAll(validTokenListByUser);
-    }
+
 
 
 }

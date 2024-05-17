@@ -11,11 +11,6 @@ public class Token {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String token;
-    @Column(name = "is_logged_out")
-
-    private boolean loggedOut;
-
-
     @ManyToOne
     private Admin admin;
 
@@ -36,13 +31,6 @@ public class Token {
         this.token = token;
     }
 
-    public boolean isLoggedOut() {
-        return loggedOut;
-    }
-
-    public void setLoggedOut(boolean loggedOut) {
-        this.loggedOut = loggedOut;
-    }
 
     public Admin getAdmin() {
         return admin;

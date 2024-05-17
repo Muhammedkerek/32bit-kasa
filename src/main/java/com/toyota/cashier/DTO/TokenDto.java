@@ -5,7 +5,7 @@ public class TokenDto {
 
     private String token;
 
-    private boolean loggedOut;
+
 
     private AdminDto adminDto;
 
@@ -17,13 +17,7 @@ public class TokenDto {
         this.token = token;
     }
 
-    public boolean isLoggedOut() {
-        return loggedOut;
-    }
 
-    public void setLoggedOut(boolean loggedOut) {
-        this.loggedOut = loggedOut;
-    }
 
     public AdminDto getAdminDto() {
         return adminDto;

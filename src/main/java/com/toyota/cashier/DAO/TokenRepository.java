@@ -11,7 +11,7 @@ public interface TokenRepository extends JpaRepository<Token, Integer> {
     @Query("""
             Select t from Token t inner join Admin a
             on t.admin.id = a.id
-            Where t.admin.id = :userId and t.loggedOut= false
+            Where t.admin.id = :userId
             """)
     List<Token> findAllUsersById(Long userId);
     Optional<Token> findByToken (String token);
