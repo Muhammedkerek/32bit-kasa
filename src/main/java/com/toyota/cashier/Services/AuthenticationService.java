@@ -51,12 +51,6 @@ public class AuthenticationService {
         return new AuthenticationResponse(jwt, "User registration was successful");
     }
 
-    private void SaveUserToken(String jwt, Admin admin) {
-        Token token = new Token();
-        token.setToken(jwt);
-        token.setAdmin(admin);
-        tokenRepository.save(token);
-    }
 
     public AuthenticationResponse authenticate(Admin request) {
         authenticationManager.authenticate(
@@ -67,14 +61,25 @@ public class AuthenticationService {
         );
         Admin admin = adminRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.generateToken(admin);
-
-
-        SaveUserToken(token , admin);
-
+        deletePreviousTokens(admin);
+        SaveUserToken(token, admin);
         return new AuthenticationResponse(token, "User login was successful");
     }
 
 
+    private void SaveUserToken(String jwt, Admin admin) {
+        Token token = new Token();
+        token.setToken(jwt);
+        token.setAdmin(admin);
+        tokenRepository.save(token);
+    }
+
+    private void deletePreviousTokens(Admin admin) {
+        List<Token> tokens = tokenRepository.findAllUsersById(admin.getId());
+        if (!tokens.isEmpty()) {
+            tokenRepository.deleteAll(tokens);
+        }
+    }
 
 
 }
