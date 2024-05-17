@@ -18,11 +18,23 @@ public class Admin implements UserDetails {
     private String firstName;
     private String lastName;
     private String username;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     private String password;
+
 
 
     @Enumerated(EnumType.STRING)
     private Role role;
+    @OneToMany(mappedBy = "admin")
+    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -89,6 +101,13 @@ public class Admin implements UserDetails {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+    public List<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(List<Token> tokens) {
+        this.tokens = tokens;
     }
 
 }
