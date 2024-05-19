@@ -14,6 +14,21 @@ public class Token {
     @ManyToOne
     private Admin admin;
 
+    public boolean isLoggedOut() {
+        return loggedOut;
+    }
+
+    public void setLoggedOut(boolean loggedOut) {
+        this.loggedOut = loggedOut;
+    }
+
+    @Column(name = "is_logged_out")
+    private boolean loggedOut;
+
+
+
+
+
 
     public Integer getId() {
         return id;

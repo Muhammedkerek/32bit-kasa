@@ -6,10 +6,12 @@ import com.toyota.cashier.DTO.AuthenticationResponse;
 import com.toyota.cashier.Domain.Admin;
 import com.toyota.cashier.Domain.Token;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -61,7 +63,7 @@ public class AuthenticationService {
         );
         Admin admin = adminRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.generateToken(admin);
-        deletePreviousTokens(admin);
+        revokeAllTokenByUser(admin);
         SaveUserToken(token, admin);
         return new AuthenticationResponse(token, "User login was successful");
     }
@@ -71,15 +73,35 @@ public class AuthenticationService {
         Token token = new Token();
         token.setToken(jwt);
         token.setAdmin(admin);
+        token.setLoggedOut(false);
         tokenRepository.save(token);
     }
 
-    private void deletePreviousTokens(Admin admin) {
+
+
+
+    public void revokeAllTokenByUser(Admin admin){
+        List<Token> validateTokenListByUser = tokenRepository.findAllUsersById(admin.getId());
+        if(!validateTokenListByUser.isEmpty()){
+            validateTokenListByUser.forEach(t ->{
+                t.setLoggedOut(true);
+            } );
+        }
+        tokenRepository.saveAll(validateTokenListByUser);
+    }
+
+
+
+
+
+
+   /* private void deletePreviousTokens(Admin admin) {
         List<Token> tokens = tokenRepository.findAllUsersById(admin.getId());
         if (!tokens.isEmpty()) {
             tokenRepository.deleteAll(tokens);
         }
-    }
+    } */
+
 
 
 }

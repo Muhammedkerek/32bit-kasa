@@ -1,6 +1,8 @@
 package com.toyota.cashier.Services;
 
+import com.toyota.cashier.DAO.TokenRepository;
 import com.toyota.cashier.Domain.Admin;
+import com.toyota.cashier.Domain.Token;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -10,13 +12,18 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
     // secret key to generate the token
     private String SECRET_KEY = "4bd7f9e2472cfea005e725097c40e6cfa37868101cafd839cdadd9025bbabdbf";
+    private TokenRepository tokenRepository;
 
+    public JwtService(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
 
     // This method extracts the username from the JWT token's subject claim.
     public String extractUsername(String token) {
@@ -35,10 +42,13 @@ public class JwtService {
 
     public boolean isValid(String token, UserDetails user) {
         String username = extractUsername(token);
-        return (username.equals(user.getUsername())) && !isTokenExpired(token);
+        boolean isValidToken = tokenRepository.findByToken(token)
+                .map(t-> !t.isLoggedOut()).orElse(false);
+
+        return (username.equals(user.getUsername())) && !isTokenExpired(token) && isValidToken;
     }
 
-    private boolean isTokenExpired(String token) {
+    public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
@@ -64,4 +74,9 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getPayload();
     }
+
+
+
+
+
 }

@@ -4,6 +4,8 @@ import com.toyota.cashier.DTO.AuthenticationResponse;
 import com.toyota.cashier.Domain.Admin;
 import com.toyota.cashier.Services.AuthenticationService;
 import jakarta.annotation.Resources;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,15 @@ public class AuthenticationResource {
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody Admin response){
         return ResponseEntity.ok(authenticationService.authenticate(response));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        // Invalidate session
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return ResponseEntity.ok("Logged out successfully");
     }
 
 }
