@@ -1,20 +1,19 @@
 package com.toyota.cashier.Services;
 
-import com.toyota.cashier.DAO.ProductRepository;
-import com.toyota.cashier.DTO.ProductsDto;
+import com.toyota.cashier.DAO.ProductsRepository;
+import com.toyota.cashier.Domain.Products;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ProductsService {
-    private final ProductRepository productRepository;
+    private final ProductsRepository productsRepository;
 
-    public ProductsService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    public ProductsService(ProductsRepository productsRepository) {
+        this.productsRepository = productsRepository;
     }
-
-    public List<ProductsDto> listAllProducts(){
-        return productRepository.findAll();
+    public List<Products> getAllProducts(){
+        return productsRepository.findAll();
     }
 }

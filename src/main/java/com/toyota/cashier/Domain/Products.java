@@ -1,10 +1,15 @@
-package com.toyota.cashier.DTO;
+package com.toyota.cashier.Domain;
 
-public class ProductsDto {
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "products")
+public class Products {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Integer quantity;
-    private Double price;
 
     public Long getId() {
         return id;
@@ -37,4 +42,8 @@ public class ProductsDto {
     public void setPrice(Double price) {
         this.price = price;
     }
+
+    private Double price;
+
+
 }
