@@ -1,21 +1,21 @@
 package com.toyota.cashier.Services;
 
-import com.toyota.cashier.DAO.AdminRepository;
+import com.toyota.cashier.DAO.RolesRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AdminDetailsServiceImp implements UserDetailsService {
-    private AdminRepository adminRepository;
+public class RolesDetailsServiceImp implements UserDetailsService {
+    private RolesRepository rolesRepository;
 
-    public AdminDetailsServiceImp(AdminRepository adminRepository) {
-        this.adminRepository = adminRepository;
+    public RolesDetailsServiceImp(RolesRepository rolesRepository) {
+        this.rolesRepository = rolesRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return adminRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("Admin is not found"));
+        return rolesRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException("Admin is not found"));
     }
 }

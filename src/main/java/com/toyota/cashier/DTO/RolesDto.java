@@ -1,6 +1,6 @@
 package com.toyota.cashier.DTO;
 
-public class AdminDto {
+public class RolesDto {
     private Long id ;
     private String firstName;
     private String lastName;

@@ -11,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "roles")
-public class Admin implements UserDetails {
+public class Roles implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
@@ -33,7 +33,7 @@ public class Admin implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(mappedBy = "admin")
+    @OneToMany(mappedBy = "roles")
     private List<Token> tokens;
 
     @Override
