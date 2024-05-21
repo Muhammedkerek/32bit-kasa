@@ -1,8 +1,7 @@
 package com.toyota.cashier.Services;
 
 import com.toyota.cashier.DAO.TokenRepository;
-import com.toyota.cashier.Domain.Admin;
-import com.toyota.cashier.Domain.Token;
+import com.toyota.cashier.Domain.Roles;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -30,9 +28,9 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public String generateToken(Admin admin) {
+    public String generateToken(Roles roles) {
         String token = Jwts.builder()
-                .subject(admin.getUsername())
+                .subject(roles.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis())) // the time that the token is issued
                 .expiration(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)) // the time that the token is expired
                 .signWith(getSignInKey())

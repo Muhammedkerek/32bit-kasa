@@ -1,7 +1,7 @@
 package com.toyota.cashier.Config;
 
 
-import com.toyota.cashier.Services.AdminDetailsServiceImp;
+import com.toyota.cashier.Services.RolesDetailsServiceImp;
 import com.toyota.cashier.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,11 +20,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private AdminDetailsServiceImp adminDetailsServiceImp;
+    private RolesDetailsServiceImp rolesDetailsServiceImp;
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     private CustomLogOutHandler logOutHandler;
-    public SecurityConfig(AdminDetailsServiceImp adminDetailsServiceImp, JwtAuthenticationFilter jwtAuthenticationFilter , CustomLogOutHandler logOutHandler) {
-        this.adminDetailsServiceImp = adminDetailsServiceImp;
+    public SecurityConfig(RolesDetailsServiceImp rolesDetailsServiceImp, JwtAuthenticationFilter jwtAuthenticationFilter , CustomLogOutHandler logOutHandler) {
+        this.rolesDetailsServiceImp = rolesDetailsServiceImp;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.logOutHandler = logOutHandler;
     }
@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 .requestMatchers("/admin_only/**").hasAuthority("ADMIN")
                                 .anyRequest()
                                 .authenticated()
-                        ).userDetailsService(adminDetailsServiceImp)
+                        ).userDetailsService(rolesDetailsServiceImp)
                         .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                         .addFilterBefore(jwtAuthenticationFilter , UsernamePasswordAuthenticationFilter.class)
                         .logout(l-> l.logoutUrl("/logout").addLogoutHandler(logOutHandler).logoutSuccessHandler((

@@ -1,78 +1,76 @@
 package com.toyota.cashier.Services;
 
-import com.toyota.cashier.DAO.AdminRepository;
+import com.toyota.cashier.DAO.RolesRepository;
 import com.toyota.cashier.DAO.TokenRepository;
 import com.toyota.cashier.DTO.AuthenticationResponse;
-import com.toyota.cashier.Domain.Admin;
+import com.toyota.cashier.Domain.Roles;
 import com.toyota.cashier.Domain.Token;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
 public class AuthenticationService {
     private PasswordEncoder passwordEncoder;
-    private AdminRepository adminRepository;
+    private RolesRepository rolesRepository;
     private JwtService jwtService;
     private AuthenticationManager authenticationManager;
     private TokenRepository tokenRepository;
 
     public AuthenticationService(PasswordEncoder passwordEncoder,
-                                 AdminRepository adminRepository,
+                                 RolesRepository rolesRepository,
                                  JwtService jwtService,
                                  AuthenticationManager authenticationManager,
                                  TokenRepository tokenRepository) {
 
         this.passwordEncoder = passwordEncoder;
-        this.adminRepository = adminRepository;
+        this.rolesRepository = rolesRepository;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
         this.tokenRepository = tokenRepository;
     }
 
 
-    public AuthenticationResponse register(Admin request) {
-        if (adminRepository.findByUsername(request.getUsername()).isPresent()) {
+    public AuthenticationResponse register(Roles request) {
+        if (rolesRepository.findByUsername(request.getUsername()).isPresent()) {
             return new AuthenticationResponse(null, "User already exist");
         }
-        Admin admin = new Admin();
-        admin.setFirstName(request.getFirstName());
-        admin.setLastName(request.getLastName());
-        admin.setUsername(request.getUsername());
-        admin.setPassword(passwordEncoder.encode((request.getPassword())));
-        admin.setRole(request.getRole());
-        admin = adminRepository.save(admin);
-        String jwt = jwtService.generateToken(admin);
-        SaveUserToken(jwt, admin);
+        Roles roles = new Roles();
+        roles.setFirstName(request.getFirstName());
+        roles.setLastName(request.getLastName());
+        roles.setUsername(request.getUsername());
+        roles.setPassword(passwordEncoder.encode((request.getPassword())));
+        roles.setRole(request.getRole());
+        roles = rolesRepository.save(roles);
+        String jwt = jwtService.generateToken(roles);
+        SaveUserToken(jwt, roles);
 
         return new AuthenticationResponse(jwt, "User registration was successful");
     }
 
 
-    public AuthenticationResponse authenticate(Admin request) {
+    public AuthenticationResponse authenticate(Roles request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
-        Admin admin = adminRepository.findByUsername(request.getUsername()).orElseThrow();
-        String token = jwtService.generateToken(admin);
-        revokeAllTokenByUser(admin);
-        SaveUserToken(token, admin);
+        Roles roles = rolesRepository.findByUsername(request.getUsername()).orElseThrow();
+        String token = jwtService.generateToken(roles);
+        revokeAllTokenByUser(roles);
+        SaveUserToken(token, roles);
         return new AuthenticationResponse(token, "User login was successful");
     }
 
 
-    private void SaveUserToken(String jwt, Admin admin) {
+    private void SaveUserToken(String jwt, Roles roles) {
         Token token = new Token();
         token.setToken(jwt);
-        token.setAdmin(admin);
+        token.setAdmin(roles);
         token.setLoggedOut(false);
         tokenRepository.save(token);
     }
@@ -80,8 +78,8 @@ public class AuthenticationService {
 
 
 
-    public void revokeAllTokenByUser(Admin admin){
-        List<Token> validateTokenListByUser = tokenRepository.findAllUsersById(admin.getId());
+    public void revokeAllTokenByUser(Roles roles){
+        List<Token> validateTokenListByUser = tokenRepository.findAllUsersById(roles.getId());
         if(!validateTokenListByUser.isEmpty()){
             validateTokenListByUser.forEach(t ->{
                 t.setLoggedOut(true);

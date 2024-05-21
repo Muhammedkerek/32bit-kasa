@@ -1,9 +1,8 @@
 package com.toyota.cashier.Resources;
 
 import com.toyota.cashier.DTO.AuthenticationResponse;
-import com.toyota.cashier.Domain.Admin;
+import com.toyota.cashier.Domain.Roles;
 import com.toyota.cashier.Services.AuthenticationService;
-import jakarta.annotation.Resources;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +18,12 @@ public class AuthenticationResource {
         this.authenticationService = authenticationService;
     }
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody Admin request){
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody Roles request){
         return ResponseEntity.ok(authenticationService.register(request));
 
     }
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody Admin response){
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody Roles response){
         return ResponseEntity.ok(authenticationService.authenticate(response));
     }
     @PostMapping("/logout")

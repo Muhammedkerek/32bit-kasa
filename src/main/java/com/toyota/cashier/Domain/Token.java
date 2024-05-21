@@ -1,7 +1,6 @@
 package com.toyota.cashier.Domain;
 
 
-import com.toyota.cashier.DTO.AdminDto;
 import jakarta.persistence.*;
 
 @Entity
@@ -12,7 +11,7 @@ public class Token {
     private Integer id;
     private String token;
     @ManyToOne
-    private Admin admin;
+    private Roles roles;
 
     public boolean isLoggedOut() {
         return loggedOut;
@@ -47,12 +46,12 @@ public class Token {
     }
 
 
-    public Admin getAdmin() {
-        return admin;
+    public Roles getAdmin() {
+        return roles;
     }
 
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
+    public void setAdmin(Roles roles) {
+        this.roles = roles;
     }
 
 

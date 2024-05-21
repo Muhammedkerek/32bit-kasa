@@ -7,7 +7,7 @@ public class TokenDto {
 
 
 
-    private AdminDto adminDto;
+    private RolesDto rolesDto;
 
     public String getToken() {
         return token;
@@ -19,11 +19,11 @@ public class TokenDto {
 
 
 
-    public AdminDto getAdminDto() {
-        return adminDto;
+    public RolesDto getAdminDto() {
+        return rolesDto;
     }
 
-    public void setAdminDto(AdminDto adminDto) {
-        this.adminDto = adminDto;
+    public void setAdminDto(RolesDto rolesDto) {
+        this.rolesDto = rolesDto;
     }
 }

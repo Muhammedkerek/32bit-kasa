@@ -1,6 +1,6 @@
 package com.toyota.cashier.filter;
 
-import com.toyota.cashier.Services.AdminDetailsServiceImp;
+import com.toyota.cashier.Services.RolesDetailsServiceImp;
 import com.toyota.cashier.Services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,9 +20,9 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
-    private AdminDetailsServiceImp adminDetailsService;
+    private RolesDetailsServiceImp adminDetailsService;
 
-    public JwtAuthenticationFilter(JwtService jwtService, AdminDetailsServiceImp adminDetailsService) {
+    public JwtAuthenticationFilter(JwtService jwtService, RolesDetailsServiceImp adminDetailsService) {
         this.jwtService = jwtService;
         this.adminDetailsService = adminDetailsService;
     }
