@@ -38,6 +38,8 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/admin_only/**").hasAuthority("ADMIN")
                                 .requestMatchers("/add_product").hasAnyAuthority("ADMIN" , "STORE_MANAGER")
+                                .requestMatchers("/products/{id}").hasAnyAuthority("ADMIN" , "STORE_MANAGER")
+
                                 .anyRequest()
                                 .authenticated()
                         ).userDetailsService(rolesDetailsServiceImp)

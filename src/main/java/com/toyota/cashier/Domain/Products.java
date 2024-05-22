@@ -1,6 +1,10 @@
 package com.toyota.cashier.Domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
+import org.springframework.lang.NonNull;
 
 @Entity
 @Table(name = "products")
@@ -8,8 +12,15 @@ public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Name Must Be Between 5 and 20 Characters")
+    @Size(min = 5, max = 20)
+
     private String name;
+  //  @NotBlank(message = "Quantity is mandatory")
+
     private Integer quantity;
+
+    private Double price;
 
     public Long getId() {
         return id;
@@ -43,7 +54,7 @@ public class Products {
         this.price = price;
     }
 
-    private Double price;
+
 
 
 }

@@ -5,6 +5,7 @@ import com.toyota.cashier.Domain.Products;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductsService {
@@ -18,6 +19,9 @@ public class ProductsService {
     }
     public void addProduct(Products products){
         productsRepository.save(products);
+    }
+    public Optional<Products> findProductById(Long id){
+        return productsRepository.findById(id);
     }
 
 }
