@@ -5,6 +5,15 @@ public class ProductsDto {
     private String name;
     private Integer quantity;
     private Double price;
+    private Boolean deleted = false;
+
+    public Boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
 
     public Long getId() {
         return id;
