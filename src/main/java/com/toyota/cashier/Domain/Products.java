@@ -1,11 +1,14 @@
 package com.toyota.cashier.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import org.springframework.lang.NonNull;
+
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -19,10 +22,21 @@ public class Products {
     private String name;
     @NotNull(message = "Quantity can't be null")
     @PositiveOrZero(message = "Quantity must be a non-negative integer")
-    private Integer quantity;
+    private Long quantity;
     @NotNull(message = "Price Can't be null")
     private Double price;
     private Boolean  deleted = false;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "products")
+    private List<Sales> sales;
+
+    public List<Sales> getSales() {
+        return sales;
+    }
+
+    public void setSales(List<Sales> sales) {
+        this.sales = sales;
+    }
 
     public Boolean isDeleted() {
         return deleted;
@@ -48,11 +62,11 @@ public class Products {
         this.name = name;
     }
 
-    public Integer getQuantity() {
+    public Long getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 

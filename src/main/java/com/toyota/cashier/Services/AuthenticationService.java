@@ -38,13 +38,15 @@ public class AuthenticationService {
         if (rolesRepository.findByUsername(request.getUsername()).isPresent()) {
             return new AuthenticationResponse(null, "User already exist");
         }
+        System.out.println("Registering user with first name: " + request.getFirstName() + ", last name: " + request.getLastName());
         Roles roles = new Roles();
         roles.setFirstName(request.getFirstName());
-        roles.setLastName(request.getLastName());
+       roles.setLastName(request.getLastName());
         roles.setUsername(request.getUsername());
         roles.setPassword(passwordEncoder.encode((request.getPassword())));
         roles.setRole(request.getRole());
         roles = rolesRepository.save(roles);
+        System.out.println("User saved with ID: " + roles.getId() + ", first name: " + roles.getFirstName() + ", last name: " + roles.getLastName());
         String jwt = jwtService.generateToken(roles);
         SaveUserToken(jwt, roles);
 

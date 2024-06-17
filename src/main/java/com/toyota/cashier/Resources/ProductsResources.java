@@ -31,7 +31,7 @@ public class ProductsResources {
         return productsService.getAllProducts();
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STORE_MANAGER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STORE_MANAGER' , 'CASHIER')")
     @PostMapping("/add_product")
     public ResponseEntity<ResponseMessage> addProduct(@Valid @RequestBody Products product) {
         productsService.addProduct(product);

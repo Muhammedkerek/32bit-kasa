@@ -1,11 +1,14 @@
 package com.toyota.cashier.DTO;
 
+import java.util.List;
+
 public class ProductsDto {
     private Long id;
     private String name;
     private Integer quantity;
     private Double price;
     private Boolean deleted = false;
+    private List<SalesDto> sales;
 
     public Boolean isDeleted() {
         return deleted;
