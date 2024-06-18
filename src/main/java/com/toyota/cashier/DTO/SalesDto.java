@@ -1,5 +1,6 @@
 package com.toyota.cashier.DTO;
 
+import com.toyota.cashier.Domain.Coupons;
 import com.toyota.cashier.Domain.Products;
 
 import java.time.LocalDateTime;
@@ -12,4 +13,5 @@ public class SalesDto {
     private LocalDateTime saleDate;
     private String cashierName;
     private List<ProductsDto> products;
+    private CouponsDto coupons;
 }

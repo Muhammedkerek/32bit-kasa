@@ -17,6 +17,19 @@ public class Sales {
     private String cashierName;
     @ManyToMany
     private List<Products> products;
+    @ManyToOne
+    private Coupons coupons;
+
+    public Coupons getCoupons() {
+        return coupons;
+    }
+
+    public void setCoupons(Coupons coupons) {
+        this.coupons = coupons;
+    }
+    public int getDayOfWeekNumber() {
+        return saleDate.getDayOfWeek().getValue();
+    }
 
     public Long getId() {
         return id;

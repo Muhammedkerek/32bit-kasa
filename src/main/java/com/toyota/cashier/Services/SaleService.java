@@ -1,7 +1,9 @@
 package com.toyota.cashier.Services;
 
+import com.toyota.cashier.DAO.CouponsRepository;
 import com.toyota.cashier.DAO.ProductsRepository;
 import com.toyota.cashier.DAO.SalesRepository;
+import com.toyota.cashier.Domain.Coupons;
 import com.toyota.cashier.Domain.Products;
 import com.toyota.cashier.Domain.Sales;
 import org.springframework.http.HttpStatus;
@@ -19,13 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class SaleService {
-
     private final ProductsRepository productsRepository;
     private final SalesRepository salesRepository;
-
-    public SaleService(ProductsRepository productsRepository, SalesRepository salesRepository) {
+    private final CouponsRepository couponsRepository;
+    public SaleService(ProductsRepository productsRepository, SalesRepository salesRepository , CouponsRepository couponsrepository) {
         this.productsRepository = productsRepository;
         this.salesRepository = salesRepository;
+        this.couponsRepository = couponsrepository;
     }
 
     public List<Sales> getAllSales() {
@@ -40,7 +42,7 @@ public class SaleService {
         }
     }
 
-    public ResponseEntity<String> createSale(List<Long> productIds) {
+    public ResponseEntity<String> createSale(List<Long> productIds ) {
         if (productIds.isEmpty()) {
             return ResponseEntity.badRequest().body("Product IDs list cannot be empty.");
         }
@@ -87,6 +89,32 @@ public class SaleService {
             sale.setSaleDate(LocalDateTime.now());
             sale.setProducts(products);
             sale.setTotalAmount(totalAmount);
+            int salesDayValue = sale.getDayOfWeekNumber();
+
+
+
+
+             if(salesDayValue == 6 || salesDayValue == 7 && totalAmount > 100){
+                Coupons coupon = new Coupons();
+                coupon.setDiscountValue(40.0);
+                coupon.setDiscountType(Coupons.DiscountType.FIXED);
+                coupon.setExpirationDate(LocalDateTime.now().plusDays(2));
+                couponsRepository.save(coupon);
+                totalAmount -= 40.0;
+                sale.setTotalAmount(totalAmount);
+                sale.setCoupons(coupon);
+            } else if (totalAmount>=100) {
+                 Coupons coupons = new Coupons();
+                 double discountValue = totalAmount * 0.10;
+                 coupons.setDiscountValue(discountValue);
+                 coupons.setExpirationDate(LocalDateTime.now().plusDays(2));
+                 coupons.setDiscountType(Coupons.DiscountType.PERCENTAGE);
+                 couponsRepository.save(coupons);
+                 totalAmount =totalAmount-discountValue;
+                 sale.setTotalAmount(totalAmount);
+                 sale.setCoupons(coupons);
+             }
+
 
             salesRepository.save(sale);
             return ResponseEntity.ok().body("Sale created successfully.");
@@ -151,6 +179,38 @@ public class SaleService {
             existingSale.setProducts(newProducts);
             existingSale.setTotalAmount(newTotalAmount);
 
+            Coupons existingCoupon = existingSale.getCoupons(); // the id of coupon in sale
+            if (existingCoupon != null) {
+                salesRepository.delete(existingSale);
+                couponsRepository.delete(existingCoupon);
+
+            }
+
+            int salesDayValue = existingSale.getDayOfWeekNumber();
+
+            if ((salesDayValue == 6 || salesDayValue == 7) && newTotalAmount > 100) {
+                Coupons coupon = new Coupons();
+                coupon.setDiscountValue(40.0);
+                coupon.setDiscountType(Coupons.DiscountType.FIXED);
+                coupon.setExpirationDate(LocalDateTime.now().plusDays(2));
+                couponsRepository.save(coupon);
+                newTotalAmount -= 40.0;
+                existingSale.setTotalAmount(newTotalAmount);
+                existingSale.setCoupons(coupon);
+            } else if (newTotalAmount >= 100) {
+                Coupons coupon = new Coupons();
+                double discountValue = newTotalAmount * 0.10;
+                coupon.setDiscountValue(discountValue);
+                coupon.setExpirationDate(LocalDateTime.now().plusDays(2));
+                coupon.setDiscountType(Coupons.DiscountType.PERCENTAGE);
+                couponsRepository.save(coupon);
+                newTotalAmount -= discountValue;
+                existingSale.setTotalAmount(newTotalAmount);
+                existingSale.setCoupons(coupon);
+            } else {
+                existingSale.setCoupons(null);
+            }
+
             salesRepository.save(existingSale);
             return ResponseEntity.ok().body("Sale updated successfully.");
         } catch (IllegalArgumentException e) {
@@ -163,9 +223,11 @@ public class SaleService {
         if(sale.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sale not found with ID: " + id);
         }
+
         Sales deletedSale = sale.get();
         deletedSale.setDeleted(true);
         salesRepository.save(deletedSale);
+
         return ResponseEntity.ok().body("Sale Soft Deleted successfully.");
 
     }
