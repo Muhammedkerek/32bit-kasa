@@ -43,6 +43,7 @@ public class SecurityConfig {
                                .requestMatchers("/create_sale").hasAnyAuthority("CASHIER" , "ADMIN")
                                 .requestMatchers("/update_sale/{saleId}").hasAnyAuthority("CASHIER" , "ADMIN")
                                 .requestMatchers("/sales/{id}").hasAnyAuthority("CASHIER" , "ADMIN")
+                                .requestMatchers("/sales/{saleId}/pdf").hasAnyAuthority("CASHIER" , "ADMIN")
 
                                 .anyRequest()
                                 .authenticated()
