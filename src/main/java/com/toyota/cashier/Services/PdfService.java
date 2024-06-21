@@ -17,6 +17,12 @@ import java.util.Map;
 
 @Service
 public class PdfService {
+    private final ProductsService productsService;
+
+    public PdfService(ProductsService productsService) {
+        this.productsService = productsService;
+    }
+
     public byte[] generatePdf(Sales sale) throws IOException, DocumentException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Document document = new Document(new Rectangle(316, 1100)); // Approximate receipt size
@@ -48,21 +54,27 @@ public class PdfService {
         document.add(new Paragraph("-----------------------------------", textFont));
 
         // Product details
+
+
+
         List<Products> products = sale.getProducts();
-        Map<String, Integer> productQuantities = new HashMap<>();
-
         for (Products product : products) {
-            productQuantities.put(product.getName(), productQuantities.getOrDefault(product.getName(), 0) + 1);
-        }
+            Long initialQuantity = productsService.findProductById(product.getId())
+                    .map(Products::getQuantity)
+                    .orElse(0L); // Get initial quantity before sale
 
-        for (Map.Entry<String, Integer> entry : productQuantities.entrySet()) {
-            String productName = entry.getKey();
-            int quantity = entry.getValue();
-            double price = products.stream().filter(p -> p.getName().equals(productName)).findFirst().get().getPrice();
+            Long finalQuantity = product.getQuantity(); // Get final quantity after sale
+
+            // Calculate sold quantity for this product
+            Long soldQuantity = initialQuantity - finalQuantity;
+
+            double price = product.getPrice(); // Get the price of the product
+
+            // Print the sold quantity and calculate the total price
             document.add(new Paragraph(String.format("(%d X %s)     $%.2f",
-                    quantity,
-                    productName,
-                    price * quantity), textFont));
+                    soldQuantity,
+                    product.getName(),
+                    price * soldQuantity), textFont));
         }
 
         document.add(new Paragraph("-----------------------------------", textFont));

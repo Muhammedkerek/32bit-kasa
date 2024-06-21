@@ -72,7 +72,7 @@ public class AuthenticationService {
     private void SaveUserToken(String jwt, Roles roles) {
         Token token = new Token();
         token.setToken(jwt);
-        token.setAdmin(roles);
+        token.setRoles(roles);
         token.setLoggedOut(false);
         tokenRepository.save(token);
     }

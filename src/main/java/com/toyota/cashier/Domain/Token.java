@@ -46,11 +46,11 @@ public class Token {
     }
 
 
-    public Roles getAdmin() {
+    public Roles getRole() {
         return roles;
     }
 
-    public void setAdmin(Roles roles) {
+    public void setRoles(Roles roles) {
         this.roles = roles;
     }
 
