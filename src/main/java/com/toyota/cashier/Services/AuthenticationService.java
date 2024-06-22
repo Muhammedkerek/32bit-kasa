@@ -41,7 +41,7 @@ public class AuthenticationService {
         System.out.println("Registering user with first name: " + request.getFirstName() + ", last name: " + request.getLastName());
         Roles roles = new Roles();
         roles.setFirstName(request.getFirstName());
-       roles.setLastName(request.getLastName());
+        roles.setLastName(request.getLastName());
         roles.setUsername(request.getUsername());
         roles.setPassword(passwordEncoder.encode((request.getPassword())));
         roles.setRole(request.getRole());
@@ -78,30 +78,15 @@ public class AuthenticationService {
     }
 
 
-
-
-    public void revokeAllTokenByUser(Roles roles){
+    public void revokeAllTokenByUser(Roles roles) {
         List<Token> validateTokenListByUser = tokenRepository.findAllUsersById(roles.getId());
-        if(!validateTokenListByUser.isEmpty()){
-            validateTokenListByUser.forEach(t ->{
+        if (!validateTokenListByUser.isEmpty()) {
+            validateTokenListByUser.forEach(t -> {
                 t.setLoggedOut(true);
-            } );
+            });
         }
         tokenRepository.saveAll(validateTokenListByUser);
     }
-
-
-
-
-
-
-   /* private void deletePreviousTokens(Admin admin) {
-        List<Token> tokens = tokenRepository.findAllUsersById(admin.getId());
-        if (!tokens.isEmpty()) {
-            tokenRepository.deleteAll(tokens);
-        }
-    } */
-
 
 
 }

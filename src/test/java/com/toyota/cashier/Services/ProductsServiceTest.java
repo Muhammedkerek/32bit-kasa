@@ -103,16 +103,24 @@ public class ProductsServiceTest {
         // Given
         Long productId = 1L;
         Products existingProduct = new Products();
-        existingProduct.setName("Updated Product");
-        existingProduct.setPrice(20.0);
-        existingProduct.setQuantity(5L);
+        existingProduct.setId(productId);
+        existingProduct.setName("Existing Product");
+        existingProduct.setPrice(15.0);
+        existingProduct.setQuantity(10L);
+
         Products updatedProduct = new Products();
+        updatedProduct.setName("Updated Product");
+        updatedProduct.setPrice(20.0);
+        updatedProduct.setQuantity(5L);
 
         when(productsRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
-        when(productsRepository.save(existingProduct)).thenReturn(existingProduct);
+        when(productsRepository.save(any(Products.class))).thenReturn(existingProduct);
 
         // When
         Products result = productsService.updateProduct(productId, updatedProduct);
+        System.out.println("Existing Product Name: " + existingProduct.getName());
+        System.out.println("Existing Product Price: " + existingProduct.getPrice());
+        System.out.println("Existing Product Quantity: " + existingProduct.getQuantity());
 
         // Then
         assertThat(result).isEqualTo(existingProduct);
@@ -120,6 +128,7 @@ public class ProductsServiceTest {
         assertThat(existingProduct.getPrice()).isEqualTo(20.0);
         assertThat(existingProduct.getQuantity()).isEqualTo(5L);
     }
+
 
     @Test
     void updateProduct_DeletedProduct_ThrowsException() {

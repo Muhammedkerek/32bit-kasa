@@ -38,7 +38,7 @@ public class SecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/admin_only/**").hasAuthority("ADMIN")
                                 .requestMatchers("/add_product").hasAnyAuthority("ADMIN" , "STORE_MANAGER" , "CASHIER")
-                                .requestMatchers("/products/{id}").hasAnyAuthority("ADMIN" , "STORE_MANAGER")
+                                .requestMatchers("/products/{id}").hasAnyAuthority("ADMIN" , "STORE_MANAGER" , "CASHIER")
                                 .requestMatchers("/sales").hasAnyAuthority("CASHIER" , "ADMIN")
                                .requestMatchers("/create_sale").hasAnyAuthority("CASHIER" , "ADMIN")
                                 .requestMatchers("/update_sale/{saleId}").hasAnyAuthority("CASHIER" , "ADMIN")
