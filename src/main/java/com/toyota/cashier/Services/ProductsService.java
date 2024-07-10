@@ -18,17 +18,20 @@ public class ProductsService {
     }
 
 
-    public List<Products> getAllProducts(){
+    public List<Products> getAllProducts() {
         return productsRepository.findAllActiveProducts();
     }
-    public void addProduct(Products products){
-        productsRepository.save(products);
 
+    public void addProduct(Products products) {
+        products.setInitialQuantity(products.getQuantity());
+        productsRepository.save(products);
     }
+
     // the reason for using the Optional <> Type , is that it reduces the chances of NullPointerException.
-    public Optional<Products> findProductById(Long id){
+    public Optional<Products> findProductById(Long id) {
         return productsRepository.findById(id);
     }
+
     public void deleteProductById(Long id) {
         Products product = productsRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
         product.setDeleted(true);
@@ -36,16 +39,19 @@ public class ProductsService {
 
     }
 
-    public Products  updateProduct(Long id , Products products){
+    public Products updateProduct(Long id, Products products) {
         Products products1 = productsRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
-        if(products1.isDeleted()){
+        if (products1.isDeleted()) {
             throw new RuntimeException("Cannot update a deleted product");
         }
         products1.setName(products.getName());
         products1.setPrice(products.getPrice());
         products1.setQuantity(products.getQuantity());
-      return   productsRepository.save(products1);
+        return productsRepository.save(products1);
 
+    }
+    public Long findInitialQuantityById(Long id) {
+        return productsRepository.findById(id).map(Products::getInitialQuantity).orElse(0L);
     }
 
 

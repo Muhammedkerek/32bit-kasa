@@ -31,7 +31,8 @@ public class ProductsResources {
         return productsService.getAllProducts();
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'STORE_MANAGER' , 'CASHIER')")
+
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'STORE_MANAGER')")
     @PostMapping("/add_product")
     public ResponseEntity<ResponseMessage> addProduct(@Valid @RequestBody Products product) {
         productsService.addProduct(product);
@@ -48,6 +49,7 @@ public class ProductsResources {
         return entityModel;
 
     }
+    // the cashier can't update or delete a specific product , he can only add products
     @PreAuthorize("hasAnyAuthority('ADMIN', 'STORE_MANAGER')")
     @DeleteMapping("/products/{id}")
     public ResponseEntity<ResponseMessage> deleteProductById(@PathVariable Long id) {

@@ -19,6 +19,8 @@ public class Products {
     @NotBlank(message = "Name Must Not be empty")
     @Size(min = 5, message = "Name must be at least 5 characters")
 
+    // i must make the name unique
+
     private String name;
     @NotNull(message = "Quantity can't be null")
     @PositiveOrZero(message = "Quantity must be a non-negative integer")
@@ -26,9 +28,19 @@ public class Products {
     @NotNull(message = "Price Can't be null")
     private Double price;
     private Boolean  deleted = false;
+
+    public Long getInitialQuantity() {
+        return initialQuantity;
+    }
+
+    public void setInitialQuantity(Long initialQuantity) {
+        this.initialQuantity = initialQuantity;
+    }
+
     @JsonIgnore
     @ManyToMany(mappedBy = "products")
     private List<Sales> sales;
+    private Long initialQuantity;
 
     public List<Sales> getSales() {
         return sales;

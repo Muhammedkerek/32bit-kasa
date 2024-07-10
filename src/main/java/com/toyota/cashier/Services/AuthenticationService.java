@@ -46,7 +46,7 @@ public class AuthenticationService {
         roles.setPassword(passwordEncoder.encode((request.getPassword())));
         roles.setRole(request.getRole());
         roles = rolesRepository.save(roles);
-        System.out.println("User saved with ID: " + roles.getId() + ", first name: " + roles.getFirstName() + ", last name: " + roles.getLastName());
+        System.out.println("User saved with ID: " + roles.getId() + ", first name: " + roles.getFirstName() + ", last name: " + roles.getLastName() + ", Role: " + roles.getRole());
         String jwt = jwtService.generateToken(roles);
         SaveUserToken(jwt, roles);
 
@@ -65,7 +65,10 @@ public class AuthenticationService {
         String token = jwtService.generateToken(roles);
         revokeAllTokenByUser(roles);
         SaveUserToken(token, roles);
+        System.out.println("-----------------------------");
+        System.out.println("User login was successful , Welcome " + request.getUsername());
         return new AuthenticationResponse(token, "User login was successful");
+
     }
 
 

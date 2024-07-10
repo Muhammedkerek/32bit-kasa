@@ -24,7 +24,8 @@ public class SaleService {
     private final ProductsRepository productsRepository;
     private final SalesRepository salesRepository;
     private final CouponsRepository couponsRepository;
-    public SaleService(ProductsRepository productsRepository, SalesRepository salesRepository , CouponsRepository couponsrepository) {
+
+    public SaleService(ProductsRepository productsRepository, SalesRepository salesRepository, CouponsRepository couponsrepository) {
         this.productsRepository = productsRepository;
         this.salesRepository = salesRepository;
         this.couponsRepository = couponsrepository;
@@ -33,6 +34,7 @@ public class SaleService {
     public List<Sales> getAllSales() {
         return salesRepository.findAllActiveSales();
     }
+
     public ResponseEntity<?> findSaleById(Long saleId) {
         Optional<Sales> optionalSale = salesRepository.findById(saleId);
         if (optionalSale.isPresent()) {
@@ -42,7 +44,7 @@ public class SaleService {
         }
     }
 
-    public ResponseEntity<String> createSale(List<Long> productIds ) {
+    public ResponseEntity<String> createSale(List<Long> productIds) {
         if (productIds.isEmpty()) {
             return ResponseEntity.badRequest().body("Product IDs list cannot be empty.");
         }
@@ -92,9 +94,7 @@ public class SaleService {
             int salesDayValue = sale.getDayOfWeekNumber();
 
 
-
-
-             if(salesDayValue == 6 || salesDayValue == 7 && totalAmount > 100){
+            if (salesDayValue == 6 || salesDayValue == 7 && totalAmount > 100) {
                 Coupons coupon = new Coupons();
                 coupon.setDiscountValue(40.0);
                 coupon.setDiscountType(Coupons.DiscountType.FIXED);
@@ -103,17 +103,17 @@ public class SaleService {
                 totalAmount -= 40.0;
                 sale.setTotalAmount(totalAmount);
                 sale.setCoupons(coupon);
-            } else if (totalAmount>=100) {
-                 Coupons coupons = new Coupons();
-                 double discountValue = totalAmount * 0.10;
-                 coupons.setDiscountValue(discountValue);
-                 coupons.setExpirationDate(LocalDateTime.now().plusDays(2));
-                 coupons.setDiscountType(Coupons.DiscountType.PERCENTAGE);
-                 couponsRepository.save(coupons);
-                 totalAmount =totalAmount-discountValue;
-                 sale.setTotalAmount(totalAmount);
-                 sale.setCoupons(coupons);
-             }
+            } else if (totalAmount >= 100) {
+                Coupons coupons = new Coupons();
+                double discountValue = totalAmount * 0.10;
+                coupons.setDiscountValue(discountValue);
+                coupons.setExpirationDate(LocalDateTime.now().plusDays(2));
+                coupons.setDiscountType(Coupons.DiscountType.PERCENTAGE);
+                couponsRepository.save(coupons);
+                totalAmount = totalAmount - discountValue;
+                sale.setTotalAmount(totalAmount);
+                sale.setCoupons(coupons);
+            }
 
 
             salesRepository.save(sale);
@@ -123,6 +123,7 @@ public class SaleService {
         }
 
     }
+
     public ResponseEntity<String> updateSale(Long saleId, List<Long> newProductIds) {
         // first checking if the Product's list in the request body is not empty
 
@@ -218,9 +219,10 @@ public class SaleService {
         }
 
     }
-    public ResponseEntity<String> deleteSale(Long id ){
+
+    public ResponseEntity<String> deleteSale(Long id) {
         Optional<Sales> sale = salesRepository.findById(id);
-        if(sale.isEmpty()){
+        if (sale.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sale not found with ID: " + id);
         }
 
